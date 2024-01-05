@@ -13,3 +13,6 @@ main.synctex*
 main.toc
 main.vrb
 _minted-main
+
+measure
+__pycache__
