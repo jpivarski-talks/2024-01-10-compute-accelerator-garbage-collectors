@@ -68,16 +68,16 @@
 \column{1.15\linewidth}
 \begin{center}\renewcommand{\arraystretch}{1.25}
 \begin{tabular}{l | c | c | c | c | c | c | c}
-                     & malloc   & reference counting              & GC      & eval    & VM      & types   & scheduling \\\hline
+                     & alloc   & reference count              & GC      & eval    & VM      & type reflect & scheduling \\\hline
 Fortran 77           &          &                                 &         &         &         &         &            \\
 C                    & $\surd$  &                                 &         &         &         &         &            \\
-C++                  & $\surd$  & \mintinline{c++}{shared_ptr<T>} &         &         &         &         & std library \\
-C++ with ROOT        & $\surd$  & \mintinline{c++}{shared_ptr<T>} &         & $\surd$ &         & $\surd$ & $\surd$     \\
-Rust                 & $\surd$  & \mintinline{c++}{Rc<T>}         &         &         &         &         &             \\
-Swift                & $\surd$  & $\surd$                         &         &         &         &         & $\surd$     \\
-Julia                & $\surd$  &                                 & $\surd$ & $\surd$ &         &         & std macros  \\
-Go                   & $\surd$  &                                 & $\surd$ &         &         &         & $\surd$     \\
-Java (JVM languages) & $\surd$  &                                 & $\surd$ &         & $\surd$ &         &             \\
+C++                  & $\surd$  & {\small\mintinline{c++}{shared_ptr<T>}} &         &         &         & vtable only  & std library \\
+C++ with ROOT        & $\surd$  & {\small\mintinline{c++}{shared_ptr<T>}} &         & $\surd$ &         & $\surd$ & $\surd$     \\
+Rust                 & $\surd$  & {\small\mintinline{c++}{Rc<T>}}         &         &         &         & vtable only  &             \\
+Swift                & $\surd$  & $\surd$                         &         &         &         & vtable only  & $\surd$     \\
+Julia                & $\surd$  &                                 & $\surd$ & $\surd$ &         & $\surd$ & std macros  \\
+Go                   & $\surd$  &                                 & $\surd$ &         &         & vtable only  & $\surd$     \\
+Java (JVM languages) & $\surd$  &                                 & $\surd$ &         & $\surd$ & $\surd$ &             \\
 Lua                  & $\surd$  &                                 & $\surd$ & $\surd$ & $\surd$ & $\surd$ &             \\
 Python               & $\surd$  & $\surd$                         & $\surd$ & $\surd$ & $\surd$ & $\surd$ & $\surd$     \\
 \end{tabular}
@@ -96,7 +96,7 @@ Java
 
 \vspace{0.5 cm}
 \large
-Conventional example of a language with garbage collection; garbage collector can be highly tuned.
+Prototypical example of a language with garbage collection; some common intuitions/preconceptions about garbage collectors are Java-specific.
 
 \column{0.34\linewidth}
 
@@ -122,7 +122,7 @@ Up and coming language, potentially ideal for HEP. JIT-compiled for bare metal, 
 \begin{frame}{}
 \LARGE
 \begin{center}
-\textcolor{darkblue}{What is the {\it current} status of Julia?}
+\textcolor{darkblue}{What is the {\it current} status of Julia in HEP?}
 \end{center}
 \end{frame}
 
@@ -344,6 +344,91 @@ Goodbye, world
 \end{uncoverenv}
 \end{columns}
 \end{frame}
+
+\begin{frame}{Differences among the three languages}
+\vspace{0.1 cm}
+\Huge
+Java \hfill {\tiny \begin{minipage}{0.8\linewidth}\hfill \textcolor{blue}{\url{https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html}}
+
+\hfill \textcolor{blue}{\url{https://abiasforaction.net/category/java/gc}}\end{minipage}}
+
+\vspace{0.25 cm}
+\normalsize
+Rather than calling \mintinline{c}{malloc} for each new object, they are created in preallocated memory pools. Each pool represents a different generation; those that survive mark-and-sweep are {\it copied} from one pool into the next.
+
+\begin{center}
+\includegraphics[width=0.7\linewidth]{java-generations-compactifications.png}
+\end{center}
+
+No stable pointers, but it keeps the memory unfragmented: finding space for new objects is fast (i.e.\ especially good for making many short-lived objects).
+\end{frame}
+
+\begin{frame}[fragile]{Differences among the three languages}
+\vspace{0.1 cm}
+\Huge
+Python \hfill {\tiny \begin{minipage}{0.7\linewidth}\hfill \textcolor{blue}{\url{https://devguide.python.org/internals/garbage-collector}}
+
+\hfill \textcolor{blue}{\url{https://docs.python.org/3/c-api/memory.html}}
+
+\hfill \textcolor{blue}{\url{https://docs.python.org/3/using/cmdline.html\#envvar-PYTHONMALLOC}}\end{minipage}}
+
+\vspace{0.25 cm}
+\normalsize
+CPython relies on reference counting for most memory management; full garbage collection is just to clean up cycles. (PyPy only has full garbage collection.)
+
+\vspace{0.2 cm}
+The 3 generations are different doubly linked lists. Mark-and-sweep marks are in the low bits of list pointers so that garbage collection has a constant memory footprint.
+
+\tiny
+\begin{verbatim}
+                           +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+ \
+                           |                    *_gc_next                  | |
+                           +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+ | PyGC_Head
+                           |                    *_gc_prev                  | |
+             object -----> +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+ /
+                           |                    ob_refcnt                  | \
+                           +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+ | PyObject_HEAD
+                           |                    *ob_type                   | |
+                           +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+ /
+                           |                      ...                      |
+\end{verbatim}
+
+\normalsize
+Objects have stable pointers, which are good for C/C++ extensions, but not managed by \mintinline{c}{malloc} (depends on \mintinline{bash}{PYTHONMALLOC} environment variable and Python build).
+\end{frame}
+
+\begin{frame}[fragile]{Differences among the three languages}
+\vspace{0.1 cm}
+\Huge
+Julia \hfill {\tiny \begin{minipage}{0.8\linewidth}\hfill \textcolor{blue}{\url{https://docs.julialang.org/en/v1/devdocs/gc}}
+
+\hfill \textcolor{blue}{\url{https://discourse.julialang.org/t/18021/3}}
+
+\hfill \textcolor{blue}{\url{https://docs.julialang.org/en/v1/devdocs/object}}\end{minipage}}
+
+\vspace{0.25 cm}
+\normalsize
+Small objects ($< 2$~kB) are managed in preallocated pools; large objects use \mintinline{c}{malloc}.
+
+\vspace{0.2 cm}
+Objects have headers for type reflection, and the first 2 bits are a mark-and-sweep mark and a generation (1 bit = 2 generations).
+
+\small
+\begin{minted}{c}
+        typedef struct {
+            opaque metadata;    /* header with GC bits */
+            jl_value_t value;   /* actual data */
+        } jl_typetag_t;
+\end{minted}
+
+\vspace{0.2 cm}
+\normalsize
+Marking is depth-first and parallel; sweeping is serial. Memory is returned to the operating system on a per-page basis, once a page has zero surviving objects, freed with \mintinline{c}{madvise} on a background thread.
+
+\vspace{0.2 cm}
+Julia makes stack-versus-heap user-visible, to avoid garbage collection when possible.
+\end{frame}
+
 
 
 \end{document}
