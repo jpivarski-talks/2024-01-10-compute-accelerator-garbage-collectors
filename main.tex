@@ -73,11 +73,11 @@ Fortran 77           &          &                                 &         &   
 C                    & $\surd$  &                                 &         &         &         &         &            \\
 C++                  & $\surd$  & {\small\mintinline{c++}{shared_ptr<T>}} &         &         &         & vtable only  & std library \\
 C++ with ROOT        & $\surd$  & {\small\mintinline{c++}{shared_ptr<T>}} &         & $\surd$ &         & $\surd$ & $\surd$     \\
-Rust                 & $\surd$  & {\small\mintinline{c++}{Rc<T>}}         &         &         &         & vtable only  &             \\
+Rust                 & $\surd$  & {\small\mintinline{c++}{Rc<T>}}         &         &         &         & vtable only  & $\surd$ \\
 Swift                & $\surd$  & $\surd$                         &         &         &         & vtable only  & $\surd$     \\
 Julia                & $\surd$  &                                 & $\surd$ & $\surd$ &         & $\surd$ & std macros  \\
 Go                   & $\surd$  &                                 & $\surd$ &         &         & vtable only  & $\surd$     \\
-Java (JVM languages) & $\surd$  &                                 & $\surd$ &         & $\surd$ & $\surd$ &             \\
+Java (JVM languages) & $\surd$  &                                 & $\surd$ &         & $\surd$ & $\surd$ & std library \\
 Lua                  & $\surd$  &                                 & $\surd$ & $\surd$ & $\surd$ & $\surd$ &             \\
 Python               & $\surd$  & $\surd$                         & $\surd$ & $\surd$ & $\surd$ & $\surd$ & $\surd$     \\
 \end{tabular}
@@ -85,7 +85,7 @@ Python               & $\surd$  & $\surd$                         & $\surd$ & $\
 \end{columns}
 \end{frame}
 
-\begin{frame}{This talk will focus on}
+\begin{frame}{This talk will focus on\ldots}
 \begin{columns}[t]
 \column{0.001\linewidth}
 
@@ -354,7 +354,7 @@ Java \hfill {\tiny \begin{minipage}{0.8\linewidth}\hfill \textcolor{blue}{\url{h
 
 \vspace{0.25 cm}
 \normalsize
-Rather than calling \mintinline{c}{malloc} for each new object, they are created in preallocated memory pools. Each pool represents a different generation; those that survive mark-and-sweep are {\it copied} from one pool into the next.
+Rather than calling \mintinline{c}{malloc} for each new object, objects are made from preallocated memory pools. Each pool represents a different generation; those that survive mark-and-sweep are {\it copied} from one pool into the next.
 
 \begin{center}
 \includegraphics[width=0.7\linewidth]{java-generations-compactifications.png}
@@ -377,7 +377,7 @@ Python \hfill {\tiny \begin{minipage}{0.7\linewidth}\hfill \textcolor{blue}{\url
 CPython relies on reference counting for most memory management; full garbage collection is just to clean up cycles. (PyPy only has full garbage collection.)
 
 \vspace{0.2 cm}
-The 3 generations are different doubly linked lists. Mark-and-sweep marks are in the low bits of list pointers so that garbage collection has a constant memory footprint.
+The 3 generations are different doubly-linked lists. Mark-and-sweep marks are in the low bits of the list pointers so that garbage collection has a constant memory footprint.
 
 \tiny
 \begin{verbatim}
@@ -404,29 +404,31 @@ Julia \hfill {\tiny \begin{minipage}{0.8\linewidth}\hfill \textcolor{blue}{\url{
 
 \hfill \textcolor{blue}{\url{https://discourse.julialang.org/t/18021/3}}
 
-\hfill \textcolor{blue}{\url{https://docs.julialang.org/en/v1/devdocs/object}}\end{minipage}}
+\hfill \textcolor{blue}{\url{https://docs.julialang.org/en/v1/devdocs/object}}
+
+\hfill \textcolor{blue}{\url{https://github.com/JuliaLang/julia/blob/v1.10.0/src/julia.h\#L106-L114}}\end{minipage}}
 
 \vspace{0.25 cm}
 \normalsize
-Small objects ($< 2$~kB) are managed in preallocated pools; large objects use \mintinline{c}{malloc}.
+$< 2$~kB objects are managed in pools, allocated by page; large objects use \mintinline{c}{malloc}.
 
 \vspace{0.2 cm}
 Objects have headers for type reflection, and the first 2 bits are a mark-and-sweep mark and a generation (1 bit = 2 generations).
 
 \small
 \begin{minted}{c}
-        typedef struct {
-            opaque metadata;    /* header with GC bits */
-            jl_value_t value;   /* actual data */
-        } jl_typetag_t;
+      typedef struct {
+          opaque metadata;    /* sizeof(uintptr_t) header */
+          jl_value_t value;   /* actual data */
+      } jl_taggedvalue_t;
 \end{minted}
 
 \vspace{0.2 cm}
 \normalsize
-Marking is depth-first and parallel; sweeping is serial. Memory is returned to the operating system on a per-page basis, once a page has zero surviving objects, freed with \mintinline{c}{madvise} on a background thread.
+Marking is depth-first and parallel; sweeping is serial. Memory is returned to the operating system on a per-page basis. Once a page has zero surviving objects, it is freed using \mintinline{c}{madvise} on a background thread.
 
 \vspace{0.2 cm}
-Julia makes stack-versus-heap user-visible, to avoid garbage collection when possible.
+Julia makes stack-versus-heap user-visible, to help users avoid garbage collection.
 \end{frame}
 
 
