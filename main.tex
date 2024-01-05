@@ -85,7 +85,215 @@ Python               & $\surd$  & $\surd$                         & $\surd$ & $\
 \end{columns}
 \end{frame}
 
+\begin{frame}{This talk will focus on}
+\begin{columns}[t]
+\column{0.001\linewidth}
 
+\column{0.34\linewidth}
+
+\Huge
+Java
+
+\vspace{0.5 cm}
+\large
+Conventional example of a language with garbage collection; garbage collector can be highly tuned.
+
+\column{0.34\linewidth}
+
+\Huge
+Python
+
+\vspace{0.5 cm}
+\large
+Very dynamic language, has both reference counting and mark-and-sweep garbage collection.
+
+\column{0.34\linewidth}
+
+\Huge
+Julia
+
+\vspace{0.5 cm}
+\large
+Up and coming language, potentially ideal for HEP. JIT-compiled for bare metal, but has a garbage collector.
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{}
+\LARGE
+\begin{center}
+\textcolor{darkblue}{What is the {\it current} status of Julia?}
+\end{center}
+\end{frame}
+
+\begin{frame}{State of language use by particle physicists as of last November}
+\vspace{0.2 cm}
+\includegraphics[width=\linewidth]{physicist-languages-presentation.pdf}
+\end{frame}
+
+\begin{frame}{But physicists are more interested in Julia than, say, Rust or Lua}
+\vspace{0.5 cm}
+Among ``Materials'' (PDFs and TXTs) in CERN's Indico search since January 2022,
+
+\vspace{0.25 cm}
+\begin{description}
+\item[\textcolor{darkorange}{\bf 63}] \textcolor{darkorange}{\bf refer to Julia the programming language}
+\item[324] refer to people named Julia
+\item[4] other/unclear
+\end{description}
+
+\begin{description}
+\item[\textcolor{darkorange}{\bf 12}] \textcolor{darkorange}{\bf refer to Rust the programming language}
+
+(7 of those same documents also refer to Julia)
+\item[10] refer to oxidized metal
+\item[3] other/unclear
+\end{description}
+
+\begin{description}
+\item[\textcolor{darkorange}{\bf 1}] \textcolor{darkorange}{\bf refers to Lua the programming language}
+
+(it's used to configure the SIMION charged particle simulator)
+\item[4] refer to the LHC User's Association
+\item[4] other/unclear
+\end{description}
+\end{frame}
+
+\begin{frame}{Similarly, Julia is increasingly a focus on ACAT and CHEP}
+\vspace{0.5 cm}
+
+\textcolor{darkblue}{\Large\bf ACAT 2022:}
+\begin{itemize}
+\item Julia: 1 title and 1 abstract
+\item Python: 3 titles and 24 abstracts
+\end{itemize}
+
+\vspace{0.5 cm}
+\textcolor{darkblue}{\Large\bf CHEP 2023:}
+\begin{itemize}
+\item Julia: 3 titles and 4 abstracts
+\item Python: 1 title and 35 abstracts
+\end{itemize}
+
+\vspace{0.5 cm}
+Only other programming languages mentioned: C++ (frequently) and Java (2 times).
+\end{frame}
+
+\begin{frame}{Julia has an HSF working group, meetings, and annual workshops}
+\vspace{0.05 cm}
+\begin{center}
+\includegraphics[width=0.72\linewidth]{juliahep-website.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{}
+\LARGE
+\begin{center}
+\textcolor{darkblue}{Back to garbage collectors}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Reference counting}
+\vspace{0.4 cm}
+\small
+
+\begin{minted}{python}
+>>> import sys
+\end{minted}
+\vspace{0.1 cm}
+\small
+\begin{minted}{python}
+>>> x = object()
+>>> sys.getrefcount(x)
+2
+\end{minted}
+
+\begin{uncoverenv}<2->
+\vspace{0.1 cm}
+\begin{minted}{python}
+>>> y = x
+>>> sys.getrefcount(x)
+3
+\end{minted}
+\end{uncoverenv}
+
+\begin{uncoverenv}<3->
+\vspace{0.1 cm}
+\begin{minted}{python}
+>>> z = [x, x, x, x, x]
+>>> sys.getrefcount(x)
+8
+\end{minted}
+\end{uncoverenv}
+
+\begin{uncoverenv}<4->
+\vspace{0.1 cm}
+\begin{minted}{python}
+>>> del x, z
+>>> sys.getrefcount(y)
+2
+\end{minted}
+\end{uncoverenv}
+
+\begin{uncoverenv}<5->
+\vspace{-5 cm}
+\hfill \includegraphics[width=6 cm]{reference-counting.png} \hspace{0.75 cm}
+\vspace{5 cm}
+\end{uncoverenv}
+\end{frame}
+
+\begin{frame}[fragile]{The problem with reference counting}
+\vspace{0.4 cm}
+\small
+\begin{minted}{python}
+>>> class HasDestructor:
+...     def __del__(self):
+...         print("Goodbye, world")
+... 
+\end{minted}
+\vspace{0.1 cm}
+\begin{minted}{python}
+>>> x = HasDestructor()
+>>> del x
+Goodbye, world
+\end{minted}
+
+\begin{uncoverenv}<2->
+\vspace{0.1 cm}
+\begin{minted}{python}
+>>> y = HasDestructor()
+>>> y.self = y
+>>> del y
+\end{minted}
+\end{uncoverenv}
+
+\begin{uncoverenv}<4->
+\vspace{0.1 cm}
+\begin{minted}{python}
+>>> import gc
+>>> gc.collect()
+Goodbye, world
+47
+\end{minted}
+\end{uncoverenv}
+
+\begin{uncoverenv}<3->
+\vspace{-3.5 cm}
+\hfill \begin{minipage}{7.75 cm} All references to \mintinline{python}{y} are gone: it can't be accessed anymore. But it has not been deleted (\mintinline{python}{__del__} has not been called) because its self-reference keeps its reference count from reaching zero.\end{minipage}
+\vspace{3.5 cm}
+\end{uncoverenv}
+
+\begin{uncoverenv}<5->
+\vspace{-2.7 cm}
+\hfill \begin{minipage}{7.75 cm} Now it's gone.\end{minipage}
+\vspace{2.7 cm}
+\end{uncoverenv}
+\end{frame}
+
+\begin{frame}{A common garbage collection algorithm}
+\vspace{0.5 cm}
+\only<1>{\includegraphics[width=\linewidth]{mark-and-sweep-1.png}}\only<2>{\includegraphics[width=\linewidth]{mark-and-sweep-2.png}}\only<3>{\includegraphics[width=\linewidth]{mark-and-sweep-3.png}}\only<4>{\includegraphics[width=\linewidth]{mark-and-sweep-4.png}}\only<5>{\includegraphics[width=\linewidth]{mark-and-sweep-5.png}}\only<6>{\includegraphics[width=\linewidth]{mark-and-sweep-6.png}}\only<7>{\includegraphics[width=\linewidth]{mark-and-sweep-7.png}}
+\end{frame}
 
 
 \end{document}
