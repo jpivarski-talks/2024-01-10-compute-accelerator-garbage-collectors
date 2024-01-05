@@ -295,6 +295,56 @@ Goodbye, world
 \only<1>{\includegraphics[width=\linewidth]{mark-and-sweep-1.png}}\only<2>{\includegraphics[width=\linewidth]{mark-and-sweep-2.png}}\only<3>{\includegraphics[width=\linewidth]{mark-and-sweep-3.png}}\only<4>{\includegraphics[width=\linewidth]{mark-and-sweep-4.png}}\only<5>{\includegraphics[width=\linewidth]{mark-and-sweep-5.png}}\only<6>{\includegraphics[width=\linewidth]{mark-and-sweep-6.png}}\only<7>{\includegraphics[width=\linewidth]{mark-and-sweep-7.png}}
 \end{frame}
 
+\begin{frame}{Garbage collector generations}
+\begin{center}
+\includegraphics[width=\linewidth]{java-collection-6.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Example in Python, which has 3 generations}
+\small
+\begin{columns}
+\column{1.09\linewidth}
+\begin{minted}{python}
+>>> import gc
+>>> _ = gc.collect(); gc.disable()
+>>> [len(gc.get_objects(gen)) for gen in (0, 1, 2)]
+[8, 0, 8220]
+\end{minted}
+
+\begin{uncoverenv}<2->
+\begin{minted}{python}
+>>> import uproot
+>>> [len(gc.get_objects(gen)) for gen in (0, 1, 2)]
+[57034, 0, 8199]
+\end{minted}
+\end{uncoverenv}
+
+\begin{uncoverenv}<3->
+\begin{minted}{python}
+>>> _ = gc.collect(); [len(gc.get_objects(gen)) for gen in (0, 1, 2)]
+[3, 0, 39192]
+\end{minted}
+\end{uncoverenv}
+
+\begin{uncoverenv}<4->
+\begin{minted}{python}
+>>> uproot.open("Zmumu.root:events").arrays()
+<Array [{Type: 'GT', Run: 148031, ...}, ...] type='2304 * {Type: stri...'>
+>>> [len(gc.get_objects(gen)) for gen in (0, 1, 2)]
+[33573, 0, 39136]
+\end{minted}
+\end{uncoverenv}
+
+\begin{uncoverenv}<5->
+\begin{minted}{python}
+>>> _ = gc.collect(); [len(gc.get_objects(gen)) for gen in (0, 1, 2)]
+[3, 0, 56692]
+\end{minted}
+\end{uncoverenv}
+\end{columns}
+\end{frame}
+
 
 \end{document}
 
