@@ -11,7 +11,7 @@
   \setbeamertemplate{footline}[frame number]  % or "page number"
   \setbeamercolor{frametitle}{fg=white}
   \setbeamercolor{footline}{fg=black}
-} 
+}
 
 \usepackage[english]{babel}
 \usepackage{inputenc}
@@ -63,6 +63,27 @@
 \end{center}
 \end{frame}
 
+\begin{frame}{Dynamic language/programming features}
+\begin{columns}
+\column{1.15\linewidth}
+\begin{center}\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{l | c | c | c | c | c | c | c}
+                     & malloc   & reference counting              & GC      & eval    & VM      & types   & scheduling \\\hline
+Fortran 77           &          &                                 &         &         &         &         &            \\
+C                    & $\surd$  &                                 &         &         &         &         &            \\
+C++                  & $\surd$  & \mintinline{c++}{shared_ptr<T>} &         &         &         &         & std library \\
+C++ with ROOT        & $\surd$  & \mintinline{c++}{shared_ptr<T>} &         & $\surd$ &         & $\surd$ & $\surd$     \\
+Rust                 & $\surd$  & \mintinline{c++}{Rc<T>}         &         &         &         &         &             \\
+Swift                & $\surd$  & $\surd$                         &         &         &         &         & $\surd$     \\
+Julia                & $\surd$  &                                 & $\surd$ & $\surd$ &         &         & std macros  \\
+Go                   & $\surd$  &                                 & $\surd$ &         &         &         & $\surd$     \\
+Java (JVM languages) & $\surd$  &                                 & $\surd$ &         & $\surd$ &         &             \\
+Lua                  & $\surd$  &                                 & $\surd$ & $\surd$ & $\surd$ & $\surd$ &             \\
+Python               & $\surd$  & $\surd$                         & $\surd$ & $\surd$ & $\surd$ & $\surd$ & $\surd$     \\
+\end{tabular}
+\end{center}
+\end{columns}
+\end{frame}
 
 
 
@@ -84,15 +105,15 @@
 %% and I see that they trigger garbage collection earlier, to stay within the box. But Enrico Guiraud told me that Linux has no such mechanism, so I'm going to need to do some reading and more experiments to be sure.
 
 %% Summary of three garbage collectors:
-%% Java: 
+%% Java:
 %% compactifies (copies) data in generational buckets, so all references are pointers-to-pointers (pointer chasing)
 %% many options, and the default has changed through the years
 %% old default would "stop the world," which was my problem with the distributed workflow; new default from Java 15 onward is pauseless
-%% Python: 
+%% Python:
 %% reference counting is the primary collector (in CPython, not PyPy), so data without reference cycles should get freed immediately after going out of scope; reference counters use a lot of memory, though
 %% uses a number of allocations (in three generations) since last collection to decide when to trigger (reference, I just found this), then it's a stop-the-world mark-and-sweep
 %% allocates data into its own arenas, so the memory use reported to the operating system can be more than what Python is actually using; that could explain some of the spurious memory leak reports
-%% Julia: 
+%% Julia:
 %% summary from the documentation; summary from Stefan Karpinsk
 %% no compactification and no reference counters: all garbage collector information is encoded in two bits of tagged pointers, one for the mark-and-sweep mark, and another for age (so exactly two generations, then)
 %% Julia's pool allocation of small objects sounds to me like the private arenas that complicate Python memory debugging, but the same page says that it malloc's arrays and large objects, so it might not matter (you only need to debug large memory issues)
