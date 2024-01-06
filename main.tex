@@ -22,6 +22,7 @@
 \usepackage{minted}
 \usepackage[thicklines]{cancel}
 \usepackage{fancyvrb}
+\usepackage[normalem]{ulem}
 
 \xdefinecolor{dianablue}{rgb}{0.18,0.24,0.31}
 \xdefinecolor{darkblue}{rgb}{0.1,0.1,0.7}
@@ -96,7 +97,7 @@ Java
 
 \vspace{0.5 cm}
 \large
-Prototypical example of a language with garbage collection; some common intuitions/preconceptions about garbage collectors are Java-specific.
+Prototypical example of a language with garbage collection; some of our intuitions/preconceptions about garbage collectors are Java-specific.
 
 \column{0.34\linewidth}
 
@@ -114,7 +115,7 @@ Julia
 
 \vspace{0.5 cm}
 \large
-Up and coming language, potentially ideal for HEP. JIT-compiled for bare metal, but has a garbage collector.
+Up-and-coming language, potentially ideal for HEP. JIT-compiled for bare metal, but has a garbage collector.
 
 \end{columns}
 \end{frame}
@@ -431,7 +432,335 @@ Marking is depth-first and parallel; sweeping is serial. Memory is returned to t
 Julia makes stack-versus-heap user-visible, to help users avoid garbage collection.
 \end{frame}
 
+\begin{frame}{}
+\LARGE
+\begin{center}
+\textcolor{darkblue}{Experiments on garbage collectors}
+\end{center}
+\end{frame}
 
+\begin{frame}[fragile]{Replacing objects with a lifespan of $3 \pm 0$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+
+
+
+
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects with a lifespan of $21 \pm 0$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+
+
+
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects with a lifespan of $273 \pm 0$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+
+
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects with a lifespan of $8463 \pm 0$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects with a lifespan of $516243 \pm 0$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects with a lifespan of $21 \pm 6.3$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+
+
+
+      for i3 in shuffle3:
+        for i7 in shuffle7:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects with a lifespan of $273 \pm 107$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+
+
+    for i3 in shuffle3:
+      for i7 in shuffle7:
+        for i13 in shuffle13:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects with a lifespan of $8500 \pm 3400$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+
+  for i3 in shuffle3:
+    for i7 in shuffle7:
+      for i13 in shuffle13:
+        for i31 in shuffle31:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects with a lifespan of $520000 \pm 210000$ steps}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{python}
+shuffle3 = [0, 2, 3]
+shuffle7 = [1, 2, 0, 6, 4, 7, 5]
+shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
+shuffle31 = # first 31 values of a permutation of [0, 32)
+shuffle61 = # first 61 values of a permutation of [0, 64)
+array = np.empty(4*8*16*32*64, dtype=object)
+for i61 in shuffle61:
+  for i31 in shuffle31:
+    for i13 in shuffle13:
+      for i7 in shuffle7:
+        for i3 in shuffle3:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+for i3 in shuffle3:
+  for i7 in shuffle7:
+    for i13 in shuffle13:
+      for i31 in shuffle31:
+        for i61 in shuffle61:
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects in Julia}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{julia}
+shuffle3::Vector{Int64} = [0, 2, 3]
+shuffle7::Vector{Int64} = [1, 2, 0, 6, 4, 7, 5]
+...
+array::Vector{Union{Vector{Int32},Nothing}} = fill(nothing, 4*8*16*32*64)
+for i61 in shuffle61
+  for i31 in shuffle31
+    for i13 in shuffle13
+      for i7 in shuffle7
+        for i3 in shuffle3
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3 + 1] = []
+        end
+        for i3 in shuffle3
+          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3 + 1] = []
+        end
+      end
+    end
+  end
+end
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Replacing objects on the JVM (Scala)}
+\small
+\begin{columns}
+\column{1.07\linewidth}
+\begin{minted}{scala}
+val shuffle3 = Array[Int](0, 2, 3)
+val shuffle7 = Array[Int](1, 2, 0, 6, 4, 7, 5)
+...
+val array = Array.fill(4*8*16*32*64)(Option.empty[Array[Int]])
+for (i61 <- shuffle61) {
+  for (i31 <- shuffle31) {
+    for (i13 <- shuffle13) {
+      for (i7 <- shuffle7) {
+        for (i3 <- shuffle3)
+          array(((((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3)) =
+              Some(Array[Int]())
+        for (i3 <- shuffle3)
+          array(((((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3)) =
+              Some(Array[Int]())
+      }
+    }
+  }
+}
+\end{minted}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Measuring time uniformly across languages}
+\vspace{0.3 cm}
+The Scala, Python, and Julia processes each send a byte (\mintinline{python}{'.'}) to a separate C++ process every 2048 ($2^{11}$) steps, which is listening to an unbuffered, localhost socket.
+
+\vspace{0.2 cm}
+The C++ process records time differences between each received byte.
+
+\small
+\vspace{0.3 cm}
+\begin{minted}{c++}
+using std::chrono;
+
+do {
+  recv(new_socket, buffer, 1, 0);
+  stop = std::chrono::steady_clock::now();
+  printf("%d\n", duration_cast<microseconds>(stop - start).count());
+  start = stop;
+}
+while (buffer[0] == '.');
+\end{minted}
+
+\normalsize
+\vspace{0.3 cm}
+When Scala, Python, or Julia encounter a garbage collector pause, it shows up as an unusually long time between pings.
+\end{frame}
 
 \end{document}
 
