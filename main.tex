@@ -439,245 +439,245 @@ Julia makes stack-versus-heap user-visible, to help users avoid garbage collecti
 \end{center}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $3 \pm 0$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16 \pm 0$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 
 
 
 
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $21 \pm 0$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16^2 = 256 \pm 0$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 
 
 
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $273 \pm 0$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16^3 = 4096 \pm 0$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 
 
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $8463 \pm 0$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16^4 = 65536 \pm 0$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $516243 \pm 0$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16^5 = 1048576 \pm 0$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $21 \pm 6.3$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16^2 = 256 \pm 97.8$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 
 
 
-      for i3 in shuffle3:
-        for i7 in shuffle7:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+      for iE in shuffleE:
+        for iD in shuffleD:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $273 \pm 107$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16^3 = 4096 \pm 1660$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 
 
-    for i3 in shuffle3:
-      for i7 in shuffle7:
-        for i13 in shuffle13:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+    for iE in shuffleE:
+      for iD in shuffleD:
+        for iC in shuffleC:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $8500 \pm 3400$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16^4 = 65\,536 \pm 26\,700$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 
-  for i3 in shuffle3:
-    for i7 in shuffle7:
-      for i13 in shuffle13:
-        for i31 in shuffle31:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+  for iE in shuffleE:
+    for iD in shuffleD:
+      for iC in shuffleC:
+        for iB in shuffleB:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Replacing objects with a lifespan of $520000 \pm 210000$ steps}
+\begin{frame}[fragile]{Replacing objects with a lifespan of $16^5 = 1\,048\,576 \pm 428\,000$ steps}
 \small
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{python}
-shuffle3 = [0, 2, 3]
-shuffle7 = [1, 2, 0, 6, 4, 7, 5]
-shuffle13 = [1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14]
-shuffle31 = # first 31 values of a permutation of [0, 32)
-shuffle61 = # first 61 values of a permutation of [0, 64)
-array = np.empty(4*8*16*32*64, dtype=object)
-for i61 in shuffle61:
-  for i31 in shuffle31:
-    for i13 in shuffle13:
-      for i7 in shuffle7:
-        for i3 in shuffle3:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
-for i3 in shuffle3:
-  for i7 in shuffle7:
-    for i13 in shuffle13:
-      for i31 in shuffle31:
-        for i61 in shuffle61:
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3] = []
+shuffleA = [7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1]
+shuffleB = [3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10]
+shuffleC = [2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11]
+shuffleD = [7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14]
+shuffleE = [14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15]
+array = np.empty(16**5, dtype=object)
+for iA in shuffleA:
+  for iB in shuffleB:
+    for iC in shuffleC:
+      for iD in shuffleD:
+        for iE in shuffleE:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
+for iE in shuffleE:
+  for iD in shuffleD:
+    for iC in shuffleC:
+      for iB in shuffleB:
+        for iA in shuffleA:
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE] = []
 \end{minted}
 \end{columns}
 \end{frame}
@@ -687,19 +687,19 @@ for i3 in shuffle3:
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{julia}
-shuffle3::Vector{Int64} = [0, 2, 3]
-shuffle7::Vector{Int64} = [1, 2, 0, 6, 4, 7, 5]
+shuffleA::Vector{Int64} = [ 7,  6,  4, 10,  0, 15,  9,  8,
+                           13,  5, 12, 14,  3, 11,  2,  1]
 ...
-array::Vector{Union{Vector{Int32},Nothing}} = fill(nothing, 4*8*16*32*64)
-for i61 in shuffle61
-  for i31 in shuffle31
-    for i13 in shuffle13
-      for i7 in shuffle7
-        for i3 in shuffle3
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3 + 1] = []
+array::Vector{Union{Vector{Int32},Nothing}} = fill(nothing, 16^5)
+for iA in shuffleA
+  for iB in shuffleB
+    for iC in shuffleC
+      for iD in shuffleD
+        for iE in shuffleE
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE + 1] = []
         end
-        for i3 in shuffle3
-          array[(((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3 + 1] = []
+        for iE in shuffleE
+          array[(((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE + 1] = []
         end
       end
     end
@@ -714,19 +714,19 @@ end
 \begin{columns}
 \column{1.07\linewidth}
 \begin{minted}{scala}
-val shuffle3 = Array[Int](0, 2, 3)
-val shuffle7 = Array[Int](1, 2, 0, 6, 4, 7, 5)
+val shuffleA = Array[Int]( 7,  6,  4, 10,  0, 15,  9,  8,
+                          13,  5, 12, 14,  3, 11,  2,  1)
 ...
-val array = Array.fill(4*8*16*32*64)(Option.empty[Array[Int]])
-for (i61 <- shuffle61) {
-  for (i31 <- shuffle31) {
-    for (i13 <- shuffle13) {
-      for (i7 <- shuffle7) {
-        for (i3 <- shuffle3)
-          array(((((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3)) =
+val array = Array.fill(Math.pow(16, 5).toInt)(Option.empty[Array[Int]])
+for (iA <- shuffleA) {
+  for (iB <- shuffleB) {
+    for (iC <- shuffleC) {
+      for (iD <- shuffleD) {
+        for (iE <- shuffleE)
+          array(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)) =
               Some(Array[Int]())
-        for (i3 <- shuffle3)
-          array(((((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3)) =
+        for (iE <- shuffleE)
+          array(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)) =
               Some(Array[Int]())
       }
     }

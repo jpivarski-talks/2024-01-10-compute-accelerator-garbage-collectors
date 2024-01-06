@@ -1,29 +1,29 @@
 import java.net.Socket
 
-val shuffle3 = Array[Int](0, 2, 3)
-val shuffle7 = Array[Int](1, 2, 0, 6, 4, 7, 5)
-val shuffle13 = Array[Int](1, 2, 9, 13, 10, 12, 0, 6, 5, 11, 4, 8, 14)
-val shuffle31 = Array[Int](21, 1, 17, 30, 11, 19, 24, 8, 14, 3, 0, 16, 18, 20, 31, 27, 22, 9, 28, 10, 5, 13, 2, 26, 12, 6, 15, 29, 25, 7, 4)
-val shuffle61 = Array[Int](47, 51, 60, 44, 7, 5, 17, 25, 14, 63, 62, 37, 21, 9, 4, 56, 15, 3, 26, 28, 41, 6, 31, 52, 2, 1, 11, 10, 23, 59, 13, 8, 42, 39, 55, 54, 0, 27, 58, 16, 20, 38, 35, 45, 61, 12, 57, 30, 53, 32, 34, 29, 46, 50, 49, 33, 40, 48, 19, 43, 22)
+val shuffleA = Array[Int](7, 6, 4, 10, 0, 15, 9, 8, 13, 5, 12, 14, 3, 11, 2, 1)
+val shuffleB = Array[Int](3, 8, 0, 15, 11, 2, 6, 7, 12, 9, 1, 14, 5, 13, 4, 10)
+val shuffleC = Array[Int](2, 13, 6, 7, 4, 5, 10, 3, 12, 15, 8, 9, 14, 1, 0, 11)
+val shuffleD = Array[Int](7, 5, 9, 15, 4, 2, 13, 12, 0, 8, 11, 6, 3, 1, 10, 14)
+val shuffleE = Array[Int](14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15)
 
 val client = new Socket("127.0.0.1", 8080)
 val stream = client.getOutputStream
 
-val array = Array.fill(4 * 8 * 16 * 32 * 64)(Option.empty[Array[Int]])
-// val array = Array.fill(4 * 8 * 16 * 32 * 64)(0)
+val array = Array.fill(Math.pow(16, 5).toInt)(Option.empty[Array[Int]])
+// val array = Array.fill(Math.pow(16, 5).toInt)(0)
 
 def run() {
   var count: Int = 0
 
   for (_ <- 1 to 20) {
-    for (i61 <- shuffle61) {
-      for (i31 <- shuffle31) {
-        for (i13 <- shuffle13) {
-          for (i7 <- shuffle7) {
-            for (i3 <- shuffle3) {
+    for (iA <- shuffleA) {
+      for (iB <- shuffleB) {
+        for (iC <- shuffleC) {
+          for (iD <- shuffleD) {
+            for (iE <- shuffleE) {
 
-              array(((((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3)) = Some(Array[Int]())
-              // array(((((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3)) = 123
+              array(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)) = Some(Array[Int]())
+              // array(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)) = 123
 
               if ((count & 0x7ff) == 0) {
                 stream.write('.')
@@ -34,14 +34,14 @@ def run() {
         }
       }
     }
-    for (i3 <- shuffle3) {
-      for (i7 <- shuffle7) {
-        for (i13 <- shuffle13) {
-          for (i31 <- shuffle31) {
-            for (i61 <- shuffle61) {
+    for (iE <- shuffleE) {
+      for (iD <- shuffleD) {
+        for (iC <- shuffleC) {
+          for (iB <- shuffleB) {
+            for (iA <- shuffleA) {
 
-              array(((((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3)) = Some(Array[Int]())
-              // array(((((i61*32 + i31)*16 + i13)*8 + i7)*4 + i3)) = 123
+              array(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)) = Some(Array[Int]())
+              // array(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)) = 123
 
               if ((count & 0x7ff) == 0) {
                 stream.write('.')
