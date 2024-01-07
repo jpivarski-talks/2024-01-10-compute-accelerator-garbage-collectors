@@ -24,7 +24,7 @@ int main() {
   }
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = INADDR_ANY;
-  address.sin_port = htons(8080);
+  address.sin_port = htons(8087);
 
   if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
     return 3;
@@ -40,6 +40,8 @@ int main() {
   steady_clock::time_point start = steady_clock::now();
   steady_clock::time_point stop = steady_clock::now();
   int phase = 0;
+  // int allocations = 0;
+  // int reallocations = 0;
 
   do {
     int num_bytes = recv(new_socket, &buffer, 1, 0);
@@ -54,21 +56,28 @@ int main() {
 
     stop = steady_clock::now();
 
-    if (phase == 1  &&  duration_cast<microseconds>(stop - bigstart).count() >= 10000000) {
+    if (phase == 1  &&  duration_cast<microseconds>(stop - bigstart).count() >= 5000000) {
       phase = 2;
       bigstart = steady_clock::now();
     }
-
-    if (phase == 2) {
-      printf("%d\n", duration_cast<microseconds>(stop - start).count());
+    else if (phase == 2) {
+      printf("%ld\n", duration_cast<microseconds>(stop - start).count());
+      // if (buffer == '1') {
+      //   allocations++;
+      // }
+      // else if (buffer == '2') {
+      //   reallocations++;
+      // }
     }
 
     start = stop;
   }
-  while (phase < 2  ||  duration_cast<microseconds>(stop - bigstart).count() < 10000000);
+  while (phase < 2  ||  duration_cast<microseconds>(stop - bigstart).count() < 30000000);
 
   close(new_socket);
   close(server_fd);
+
+  // printf("allocations %d reallocations %d\n", allocations, reallocations);
 
   return 0;
 }

@@ -8,11 +8,11 @@ val shuffleE = Array[Int](14, 11, 10, 8, 0, 6, 5, 1, 13, 9, 7, 4, 2, 12, 3, 15)
 val shuffleF = Array[Int](10, 5, 4, 6, 15, 1, 9, 13, 7, 2, 11, 12, 0, 8, 3, 14)
 val shuffleG = Array[Int](5, 12, 6, 14, 4, 13, 3, 0, 7, 9, 15, 2, 11, 8, 1, 10)
 
-val client = new Socket("127.0.0.1", 8080)
+val client = new Socket("127.0.0.1", 8087)
 val stream = client.getOutputStream
 
+// val array = Array.fill(Math.pow(16, 7).toInt)(0)
 val array = Array.fill(Math.pow(16, 7).toInt)(Option.empty[Array[Int]])
-// val array = Array.fill(Math.pow(16, 5).toInt)(0)
 
 def run() {
   var count: Int = 0
@@ -25,34 +25,28 @@ def run() {
             for (iF <- shuffleF) {
               for (iG <- shuffleG) {
 
+                // array((((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG) = count
                 array((((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG) = Some(Array[Int]())
-                // array((((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG) = 123
 
                 if ((count & 0x7ff) == 0) {
-                  stream.write('.')
+                  stream.write('1')
                 }
                 count += 1
               }
             }
           }
         }
-      }
-    }
-  }
 
-  for (iA <- shuffleA) {
-    for (iB <- shuffleB) {
-      for (iC <- shuffleC) {
         for (iD <- shuffleD) {
           for (iE <- shuffleE) {
             for (iF <- shuffleF) {
               for (iG <- shuffleG) {
 
+                // array((((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG) = count
                 array((((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG) = Some(Array[Int]())
-                // array((((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG) = 123
 
                 if ((count & 0x7ff) == 0) {
-                  stream.write('.')
+                  stream.write('2')
                 }
                 count += 1
               }

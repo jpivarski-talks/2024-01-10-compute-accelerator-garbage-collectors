@@ -12,9 +12,10 @@ shuffleF = [10, 5, 4, 6, 15, 1, 9, 13, 7, 2, 11, 12, 0, 8, 3, 14]
 shuffleG = [5, 12, 6, 14, 4, 13, 3, 0, 7, 9, 15, 2, 11, 8, 1, 10]
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(("127.0.0.1", 8080))
+client.connect(("127.0.0.1", 8087))
 
-array = np.full(16**7, None, dtype=object)
+array = np.zeros(16**7, dtype=np.int32)
+# array = np.full(16**7, None, dtype=object)
 
 # gc.disable()
 # gc.collect()
@@ -27,20 +28,22 @@ for iA in shuffleA:
                 for iE in shuffleE:
                     for iF in shuffleF:
                         for iG in shuffleG:
-                            array[(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG] = tmp = []
-                            tmp.append(tmp)
+                            array[(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG] = count
+                            # array[(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG] = (None,) * 100
+                            # array[(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG] = tmp = []
+                            # tmp.append(tmp)
                             if count & 0x7ff == 0:
-                                client.send(b".")
+                                client.send(b"1")
                             count += 1
-for iA in shuffleA:
-    for iB in shuffleB:
-        for iC in shuffleC:
+
             for iD in shuffleD:
                 for iE in shuffleE:
                     for iF in shuffleF:
                         for iG in shuffleG:
-                            array[(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG] = tmp = []
-                            tmp.append(tmp)
+                            array[(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG] = count
+                            # array[(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG] = (None,) * 100
+                            # array[(((((iA*16 + iB)*16 + iC)*16 + iD)*16 + iE)*16 + iF)*16 + iG] = tmp = []
+                            # tmp.append(tmp)
                             if count & 0x7ff == 0:
-                                client.send(b".")
+                                client.send(b"2")
                             count += 1
