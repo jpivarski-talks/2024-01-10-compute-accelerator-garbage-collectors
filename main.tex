@@ -762,6 +762,54 @@ while (buffer == '.');
 When Scala, Python, or Julia are stopped by a garbage collector pause, it shows up as an unusually long time between pings.
 \end{frame}
 
+\begin{frame}{Java: many, many, many options}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{gcmeasure-java8.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-java21.pdf}}\only<3>{\includegraphics[width=\linewidth]{gcmeasure-javaZ.pdf}}\only<4>{\includegraphics[width=\linewidth]{gcmeasure-javaShenandoah.pdf}}\only<5>{\includegraphics[width=\linewidth]{gcmeasure-javaSerial.pdf}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Java: scaling with object lifespan}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{gcmeasure-java-lifespan-0std.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-java-lifespan.pdf}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Python: only triggered for mutable objects}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{gcmeasure-python.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-python-zoom.pdf}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Julia: very predictable}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{gcmeasure-julia.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-julia-zoom.pdf}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Julia: very predictable}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{gcmeasure-julia.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-julia-zoom.pdf}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Julia: short object lifespan still has second-long pauses}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{gcmeasure-julia-lifespan-0std.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-julia-lifespan.pdf}}
+\end{columns}
+\end{frame}
+
 \end{document}
 
 %% Yes, I've run into performance problems with garbage collectors in previous projects, though they were particular situations that can perhaps be avoided.
