@@ -5,12 +5,14 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+using namespace std::chrono;
+
 int main() {
   int server_fd;
   int new_socket;
   struct sockaddr_in address;
   int addrlen = sizeof(address);
-  char buffer[1] = {0};
+  char buffer = 0;
 
   if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
     return 1;
@@ -34,20 +36,36 @@ int main() {
     return 5;
   }
 
-  std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-  std::chrono::steady_clock::time_point stop = std::chrono::steady_clock::now();
+  steady_clock::time_point bigstart;
+  steady_clock::time_point start = steady_clock::now();
+  steady_clock::time_point stop = steady_clock::now();
+  int phase = 0;
 
   do {
-    int num_bytes = recv(new_socket, buffer, 1, 0);
+    int num_bytes = recv(new_socket, &buffer, 1, 0);
     if (num_bytes < 0) {
       return 6;
     }
 
-    stop = std::chrono::steady_clock::now();
-    printf("%d\n", std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count());
+    if (phase == 0) {
+      bigstart = steady_clock::now();
+      phase = 1;
+    }
+
+    stop = steady_clock::now();
+
+    if (phase == 1  &&  duration_cast<microseconds>(stop - bigstart).count() >= 10000000) {
+      phase = 2;
+      bigstart = steady_clock::now();
+    }
+
+    if (phase == 2) {
+      printf("%d\n", duration_cast<microseconds>(stop - start).count());
+    }
+
     start = stop;
   }
-  while (buffer[0] == '.');
+  while (phase < 2  ||  duration_cast<microseconds>(stop - bigstart).count() < 10000000);
 
   close(new_socket);
   close(server_fd);

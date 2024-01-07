@@ -746,15 +746,15 @@ The C++ process records time differences between each received byte.
 \small
 \vspace{0.3 cm}
 \begin{minted}{c++}
-using std::chrono;
+using namespace std::chrono;
 
 do {
-  recv(new_socket, buffer, 1, 0);
+  recv(new_socket, &buffer, 1, 0);
   stop = std::chrono::steady_clock::now();
   printf("%d\n", duration_cast<microseconds>(stop - start).count());
   start = stop;
 }
-while (buffer[0] == '.');
+while (buffer == '.');
 \end{minted}
 
 \normalsize
