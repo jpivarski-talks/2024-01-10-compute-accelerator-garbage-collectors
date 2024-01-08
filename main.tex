@@ -846,7 +846,7 @@ Python's and Julia's garbage collectors are not as tunable as Java's, but you ca
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Julia-culture encourages allocation-avoidance}
+\begin{frame}{Julia community helps its members avoid heap-allocation}
 \vspace{0.5 cm}
 
 Heap-allocation and garbage collection exist for prototyping and early iterations of development, but the Julia community actively helps users eliminate it from hot loops.
@@ -873,13 +873,63 @@ Heap-allocation and garbage collection exist for prototyping and early iteration
 \large
 \vspace{0.5 cm}
 \begin{center}
-\textcolor{darkblue}{Part 2: out-of-memory errors}
+\textcolor{darkblue}{Part 2: memory footprint}
 \end{center}
 \end{frame}
 
+\begin{frame}[fragile]{Does garbage collection run more often if there's less memory?}
+\Large
 
+\vspace{0.5 cm}
+\uncover<2->{\textcolor{darkblue}{Java:} YES. \normalsize That's what the \mintinline{bash}{-Xms} (min) and \mintinline{bash}{-Xmx} (max) arguments are for.} \Large
 
+\vspace{1 cm}
+\uncover<3->{\textcolor{darkblue}{Python and Julia:} ? \normalsize I had always assumed so, but let's test it.} \large
 
+\vspace{1 cm}
+\begin{uncoverenv}<4->
+The following runs command \mintinline{bash}{X} with at most \mintinline{bash}{1000M} of memory:
+
+\small
+\vspace{0.25 cm}
+\begin{minted}{bash}
+systemd-run --user --scope -p MemoryMax=1000M -p MemorySwapMax=0M X
+\end{minted}
+\end{uncoverenv}
+\end{frame}
+
+\begin{frame}{Julia: YES}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\includegraphics[width=\linewidth]{gcbox-julia.pdf}
+\end{columns}
+
+\vspace{-7.7 cm}
+\hfill\textcolor{blue}{\small\url{https://discourse.julialang.org/t/64592}}\hspace{-1 cm}
+\vspace{7.7 cm}
+\end{frame}
+
+\begin{frame}{Python: NO}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{gcbox-python.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcbox-python-10x.pdf}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Conclusions}
+\large
+\vspace{0.5 cm}
+\begin{itemize}\setlength{\itemsep}{0.25 cm}
+\item Garbage collection is just one of many dynamic programming language features, some of which we take for granted.
+\item<2-> Julia is an up-and-coming language, which could be ideal for HEP.
+\item<3-> Java's garbage collector is generational, compacting, scales with available memory, and has many, many options.
+\item<4-> Python's garbage collector is generational (3), not compacting, does not scale with available memory, and is only needed to clean up objects with cyclical references.
+\item<5-> Julia's garbage collector is generational (2), not compacting, and scales with available memory.
+\item<6-> The Julia community considers avoiding heap-allocation a priority.
+\end{itemize}
+\end{frame}
 
 \end{document}
 
