@@ -371,7 +371,9 @@ Python \hfill {\tiny \begin{minipage}{0.7\linewidth}\hfill \textcolor{blue}{\url
 
 \hfill \textcolor{blue}{\url{https://docs.python.org/3/c-api/memory.html}}
 
-\hfill \textcolor{blue}{\url{https://docs.python.org/3/using/cmdline.html\#envvar-PYTHONMALLOC}}\end{minipage}}
+\hfill \textcolor{blue}{\url{https://docs.python.org/3/using/cmdline.html\#envvar-PYTHONMALLOC}}
+
+\hfill \textcolor{blue}{\url{https://rushter.com/blog/python-garbage-collector}}\end{minipage}}
 
 \vspace{0.25 cm}
 \normalsize
@@ -436,6 +438,12 @@ Julia makes stack-versus-heap user-visible, to help users avoid garbage collecti
 \LARGE
 \begin{center}
 \textcolor{darkblue}{Experiments on garbage collectors}
+\end{center}
+
+\large
+\vspace{0.5 cm}
+\begin{center}
+\textcolor{darkblue}{Part 1: timing experiments}
 \end{center}
 \end{frame}
 
@@ -762,12 +770,34 @@ while (buffer == '.');
 When Scala, Python, or Julia are stopped by a garbage collector pause, it shows up as an unusually long time between pings.
 \end{frame}
 
-\begin{frame}{Java: many, many, many options}
+\begin{frame}{Java: actively researching garbage collectors for decades}
 \vspace{0.25 cm}
 \begin{columns}
 \column{1.1\linewidth}
-\only<1>{\includegraphics[width=\linewidth]{gcmeasure-java8.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-java21.pdf}}\only<3>{\includegraphics[width=\linewidth]{gcmeasure-javaZ.pdf}}\only<4>{\includegraphics[width=\linewidth]{gcmeasure-javaShenandoah.pdf}}\only<5>{\includegraphics[width=\linewidth]{gcmeasure-javaSerial.pdf}}
+\only<1>{\includegraphics[width=\linewidth]{gcmeasure-javaSerial.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-java8.pdf}}\only<3>{\includegraphics[width=\linewidth]{gcmeasure-java21.pdf}}\only<4>{\includegraphics[width=\linewidth]{gcmeasure-javaZ.pdf}}\only<5>{\includegraphics[width=\linewidth]{gcmeasure-javaShenandoah.pdf}}
 \end{columns}
+\end{frame}
+
+\begin{frame}{Java: actively researching garbage collectors for decades}
+\vspace{0.25 cm}
+The OpenJDK and other JDK implementations come with many algorithms:
+
+\vspace{0.25 cm}
+\includegraphics[width=\linewidth]{garbage-collector-comparison.png}
+
+\vspace{0.25 cm} and each has many tuning options (not explored in this talk), to address different \textcolor{darkblue}{throughput-versus-latency} tradeoffs.
+\end{frame}
+
+\begin{frame}{Examples of throughput-versus-latency tradeoffs}
+\begin{description}
+\item[Example I've encountered:] in a distributed system, one service was sending messages to another. During the garbage collector pauses, the recipient's input queue would overflow, which created yet more objects to garbage-collect, in a viscious cycle.
+
+\vspace{0.25 cm}
+I spent days or weeks testing and tuning alternate garbage collectors.
+
+\vspace{1 cm}
+\item[Obvious cases for HEP:] triggers, data acquisition, monitoring. Any real-time system.
+\end{description}
 \end{frame}
 
 \begin{frame}{Java: scaling with object lifespan}
@@ -786,7 +816,7 @@ When Scala, Python, or Julia are stopped by a garbage collector pause, it shows 
 \end{columns}
 \end{frame}
 
-\begin{frame}{Julia: very predictable}
+\begin{frame}{Julia: has pauses, but very regular; may be easy to reason about}
 \vspace{0.25 cm}
 \begin{columns}
 \column{1.1\linewidth}
@@ -801,6 +831,55 @@ When Scala, Python, or Julia are stopped by a garbage collector pause, it shows 
 \only<1>{\includegraphics[width=\linewidth]{gcmeasure-julia-lifespan-0std.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-julia-lifespan.pdf}}
 \end{columns}
 \end{frame}
+
+\begin{frame}{Alternative garbage collectors in Python and Julia}
+\vspace{0.5 cm}
+Python's and Julia's garbage collectors are not as tunable as Java's, but you can\ldots
+
+\vspace{0.25 cm}
+\begin{itemize}\setlength{\itemsep}{0.2 cm}
+\item Turn them off completely, at least for debugging: \mintinline{python}{gc.disable()} (Python) and \mintinline{julia}{GC.enable(false)} (Julia).
+\item Invoke them manually: \mintinline{python}{gc.collect()} (Python) and \mintinline{julia}{GC.gc()} (Julia).
+\item Python's garbage collector is triggered by the number of objects since last collection, which can be tuned: \mintinline{python}{gc.set_threshold(700, 10, 10)}.
+\item Both can be logged, and in Python, you can also set callbacks (code) on various garbage collector phases.
+\item Python has an alternate implementation, PyPy, which only does tracing garbage collection (no reference counting) and is tuned differently: \textcolor{blue}{\small\url{https://doc.pypy.org/en/latest/gc_info.html}}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Julia-culture encourages allocation-avoidance}
+\vspace{0.5 cm}
+
+Heap-allocation and garbage collection exist for prototyping and early iterations of development, but the Julia community actively helps users eliminate it from hot loops.
+
+\vspace{0.5 cm}
+\begin{itemize}\setlength{\itemsep}{0.5 cm}
+\item Same philosophy as with other dynamic features, such as type reflection.
+
+\item \textcolor{blue}{\small\url{https://docs.julialang.org/en/v1/manual/performance-tips/\#Measure-performance-with-[@time](@ref)-and-pay-attention-to-memory-allocation}}
+
+\item \textcolor{blue}{\small\url{https://stackoverflow.com/questions/tagged/julia+allocation}}
+
+\item Static allocation-checker: \textcolor{blue}{\small\url{https://github.com/JuliaLang/AllocCheck.jl}}.
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{}
+\LARGE
+\begin{center}
+\textcolor{darkblue}{Experiments on garbage collectors}
+\end{center}
+
+\large
+\vspace{0.5 cm}
+\begin{center}
+\textcolor{darkblue}{Part 2: out-of-memory errors}
+\end{center}
+\end{frame}
+
+
+
+
 
 \end{document}
 
