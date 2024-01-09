@@ -72,7 +72,7 @@ int main() {
 
     start = stop;
   }
-  while (phase < 2  ||  duration_cast<microseconds>(stop - bigstart).count() < 30000000);
+  while (phase < 2  ||  duration_cast<microseconds>(stop - bigstart).count() < 60000000);
 
   close(new_socket);
   close(server_fd);

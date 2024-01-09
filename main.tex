@@ -816,6 +816,14 @@ I spent days or weeks testing and tuning alternate garbage collectors.
 \end{columns}
 \end{frame}
 
+\begin{frame}{PyPy: triggered for all objects}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{gcmeasure-pypy.pdf}}\only<2>{\includegraphics[width=\linewidth]{gcmeasure-pypy-zoom.pdf}}
+\end{columns}
+\end{frame}
+
 \begin{frame}{Julia: has pauses, but very regular; may be easy to reason about}
 \vspace{0.25 cm}
 \begin{columns}
@@ -926,8 +934,8 @@ systemd-run --user --scope -p MemoryMax=1000M -p MemorySwapMax=0M X
 \item<2-> Julia is an up-and-coming language, which could be ideal for HEP.
 \item<3-> Java's garbage collector is generational, compacting, scales with available memory, and has many, many options.
 \item<4-> Python's garbage collector is generational (3), not compacting, does not scale with available memory, and is only needed to clean up objects with cyclical references.
-\item<5-> Julia's garbage collector is generational (2), not compacting, and scales with available memory.
-\item<6-> The Julia community considers avoiding heap-allocation a priority.
+\item<5-> Julia's garbage collector is generational (2), not compacting, and scales with available memory. Also, I'd characterize it as ``well-behaved.''
+\item<6-> The Julia community considers avoiding heap-allocation a priority and helps users to achieve it.
 \end{itemize}
 \end{frame}
 
